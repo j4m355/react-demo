@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "browserify": "^11.0.1",
     "gulp": "^3.9.1",
     "gulp-connect": "^4.0.0",
-    "gulp-open": "^2.0.0"
+    "gulp-open": "^2.0.0",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {

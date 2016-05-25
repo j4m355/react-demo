@@ -1,17 +1,24 @@
 "use strict";
 
 var gulp = require('gulp');
-//runs local dev server
-var connect = require('gulp-connect');
-//opens url in web browser
-var open = require('gulp-open');
+var connect = require('gulp-connect'); //runs local dev server
+var open = require('gulp-open');//opens url in web browser
+var browserify = require('browserify');  //bundles JS
+var reactify = require('reactify'); //Transforms react jsx to js
+var source = require('vinyl-source-stream'); // user conventional text streams with Gulp
+
+
+
+
 
 var config = {
 	port: 9005,
 	devBaseUrl: 'http://localhost',
 	paths: {
 		html: './src/*.html',
-		dist: './dist'
+		js: './src/**/*.js',
+		dist: './dist',
+		mainJs: './src/main.js'
 	}
 }
 
@@ -37,8 +44,19 @@ gulp.task('html', function(){
 		.pipe(connect.reload());
 });
 
-gulp.task('watch', function(){
-	gulp.watch(config.paths.html, ['html'])
+gulp.task('js', function(){
+	browserify(config.paths.mainJs)
+		.transform(reactify)
+		.bundle()
+		.on('error', console.error.bind(console))
+		.pipe(source('bundle.js'))
+		.pipe(gulp.dest(config.paths.dist + '/scripts'))
+		.pipe(connect.reload())
 });
 
-gulp.task('default', ['html', 'open', 'watch']);
+gulp.task('watch', function(){
+	gulp.watch(config.paths.html, ['html']);
+	gulp.watch(config.paths.html, ['js']);
+});
+
+gulp.task('default', ['html', 'js', 'open', 'watch']);
